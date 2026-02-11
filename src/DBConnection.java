@@ -9,7 +9,7 @@ public class DBConnection {
     private static final String USER = "root";
     private static final String PASSWORD = "";
 
-    private iDBConnecton() {
+    private DBConnection() {
 
     }
     public static Connection getConnection() throws SQLException {

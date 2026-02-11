@@ -9,7 +9,6 @@ public class Prestataire {
     public Prestataire(int id, String secteur) {
         this.id = id;
         this.secteur = secteur;
-
     }
     public int getId() {return id;}
     public String getSecteur() {return secteur;}
