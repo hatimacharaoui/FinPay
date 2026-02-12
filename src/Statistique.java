@@ -1,8 +1,8 @@
-import javax.print.attribute.standard.MediaSize;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +41,32 @@ public class Statistique {
     }
 
     public void getPaidInvoices() {
+        this.factures.clear();
+        String query = "SELECT id, date, statut FROM facture WHERE statut = 'PAYEE'";
+
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+            System.out.println("---- FACTURES PAYEES ----");
+            while(resultSet.next()) {
+                int id = resultSet.getInt("id");
+
+                java.sql.Date dbDate = resultSet.getDate("date");
+                LocalDate date = (dbDate != null) ? dbDate.toLocalDate() : null;
+                String statut = resultSet.getString("statut");
+
+                Paiement paiement = new Paiement();
+                Client client = new Client();
+                Prestataire prestataire = new Prestataire();
+
+                Facture f = new Facture(id, paiement, statut, date, client, prestataire);
+                this.factures.add(f);
+
+                System.out.println("Facture ID : " + f.getId() + " | Statut : " + f.getStatut();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void getUnpaidInvoices() {
