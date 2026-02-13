@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Statistique {
-    private double totalCommissions;
-    private double totalPayments;
+    private double commissions;
+    private double totalPaiements;
     private List<Facture> factures;
 
-    public Statistique (double totalCommissions, double totalPayments, List<Facture> factures) {
-        this.totalCommissions = totalCommissions;
-        this.totalPayments = totalPayments;
+    public Statistique (double commissions, double totalPaiements, List<Facture> factures) {
+        this.commissions = commissions;
+        this.totalPaiements = totalPaiements;
         this.factures = factures;
     }
 
@@ -21,7 +21,7 @@ public class Statistique {
         String query = "SELECT SUM(paid_amount) FROM Paiement";
         try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet res = stmt.executeQuery()) {
             if (res.next()) {
-                this.totalPayments = res.getDouble(1);
+                this.totalPaiements = res.getDouble(1);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -32,12 +32,12 @@ public class Statistique {
         String query = "SELECT SUM(commission_fee) FROM Paiement";
         try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet res = stmt.executeQuery()) {
             if (res.next()) {
-                this.totalCommissions = res.getDouble(1);
+                this.commissions = res.getDouble(1);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return totalCommissions;
+        return commissions;
     }
 
     public void getPaidInvoices() {
@@ -47,6 +47,7 @@ public class Statistique {
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query);
              ResultSet resultSet = statement.executeQuery()) {
+
             System.out.println("---- FACTURES PAYEES ----");
             while(resultSet.next()) {
                 int id = resultSet.getInt("id");
@@ -70,8 +71,47 @@ public class Statistique {
     }
 
     public void getUnpaidInvoices() {
+        this.factures.clear();
+        String query = "SELECT id, date, statut FROM facture WHERE statut = 'NON_PAYEE'";
+
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            System.out.println("---- FACTURES NON PAYEES ----");
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                java.sql.Date dbDate = resultSet.getDate("date");
+                LocalDate date = (dbDate != null) ? dbDate.toLocalDate() : null;
+                String statut = resultSet.getString("statut");
+
+                Paiement paiement = new Paiement();
+                Client client = new Client();
+                Prestataire prestataire = new Prestataire();
+
+                Facture f = new Facture(id, paiement, statut, date, client, prestataire);
+
+                this.factures.add(f);
+                System.out.println("Facture id : " + f.getId() + " | Statut : " + f.getStatut());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void getTotalGainByCommissions() {
+        String query = "SELECT SUM(montant_commission) FROM paiement";
+
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            if (resultSet.next()) {
+                this.commissions = resultSet.getDouble(1);
+                System.out.println("GAIN TOTAL DES COMMISSIONS : " + this.commissions);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
