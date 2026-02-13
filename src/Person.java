@@ -7,6 +7,8 @@ public class Person {
         this.nome = nome;
     }
 
+    public Person() {
+    }
     public int getId() {
         return id;
     }

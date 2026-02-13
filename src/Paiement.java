@@ -14,6 +14,9 @@ public class Paiement {
         this.datePaiement = datePaiement;
         this.idFacture = idFacture;
     }
+    public Paiement(double montant){
+        this.montant=montant;
+    }
 
     public int getIdPaiement() {return idPaiement;}
     public void setIdPaiement(int idPaiement) {this.idPaiement = idPaiement;}

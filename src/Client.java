@@ -9,6 +9,9 @@ public class Client extends Person {
         this.email = email;
         this.phone = phone;
     }
+    public Client(int id) {
+        this.setId(id);
+    }
 
     public String getEmail() {
         return email;
