@@ -1,3 +1,4 @@
+import java.sql.*;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -67,8 +68,94 @@ public class Paiement {
         this.totalPaiment = totalPaiment;
     }
 
+    public void enregistrerPaiment(Scanner input) {
+        System.out.println("--- Nouveau Paiement ---");
+        System.out.print("Entrez le numéro id du client : ");
+        int id = input.nextInt();
+        input.nextLine();
 
+        Client c = client.findId(id);
+        if (c == null) {
+            System.out.println("Cet ID n’existe pas.");
+            return;
+        }
+        try (Connection conn = DBConnection.getConnection()) {
+            String sqlSelectFactures = "SELECT id_facture, montant_total, statut FROM facture WHERE id_client = ? AND statut != 'PAYEE'";
 
+            try (PreparedStatement psFactures = conn.prepareStatement(sqlSelectFactures)) {
+                psFactures.setInt(1, id);
+                ResultSet rs = psFactures.executeQuery();
+
+                System.out.println("\n--- Factures en attente pour " + c.getNome() + " ---");
+                boolean hasFactures = false;
+                while (rs.next()) {
+                    hasFactures = true;
+                    System.out.println("ID Facture: " + rs.getInt("id_facture") +
+                            " | Montant: " + rs.getDouble("montant_total") +
+                            " | Statut: " + rs.getString("statut"));
+                }
+
+                if (!hasFactures) {
+                    System.out.println("Ce client n'a aucune facture à payer.");
+                    return;
+                }
+            }
+
+            System.out.print("Entrez l'ID de la facture à régler : ");
+            int idF = input.nextInt();
+            System.out.print("Entrez le montant du paiement : ");
+            double montant = input.nextDouble();
+
+            double commission = (montant * 2.0) / 100;
+
+            String sqlInsert = "INSERT INTO paiement (id_client, totalPaiment, date_paiment, commission) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement psInsert = conn.prepareStatement(sqlInsert)) {
+                psInsert.setInt(1, id);
+                psInsert.setDouble(2, montant);
+                psInsert.setTimestamp(3, new java.sql.Timestamp(System.currentTimeMillis()));
+                psInsert.setDouble(4, commission);
+                psInsert.executeUpdate();
+
+                String sqlUpdateFacture = "UPDATE facture SET statut = (CASE WHEN montant_total <= ? THEN 'PAYEE' ELSE 'PARTIEL' END) WHERE id_facture = ?";
+                try (PreparedStatement psUpdate = conn.prepareStatement(sqlUpdateFacture)) {
+                    psUpdate.setDouble(1, montant);
+                    psUpdate.setInt(2, idF);
+                    psUpdate.executeUpdate();
+                }
+
+                System.out.println("Paiement enregistré avec succès !");
+                System.out.println("Commission (2%) : " + commission + " DH");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erreur SQL : " + e.getMessage());
+        }
+    }
+
+    public void listerPaiement(){
+        System.out.println("========lister paiement=============");
+        String sql = "SELECT * FROM paiement";
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                int id = rs.getInt("id_client");
+                String totalpayment = rs.getString("totalPaiment");
+                String commission = rs.getString("commission");
+                String date_paiment = rs.getString("date_paiment");
+
+                System.out.println("id : " + id);
+                System.out.println("Name: " + totalpayment);
+                System.out.println("commission: " + commission);
+                System.out.println("date paiment: " + date_paiment);
+                System.out.println("-----------------------------------");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération des clients : " + e.getMessage());
+        }
+    }
 
 
     @Override

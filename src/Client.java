@@ -29,6 +29,33 @@ public class Client extends Person {
     }
 
 
+    public Client findId(int id) {
+        String sql = "SELECT * FROM client WHERE id_client = ?";
+        Client client = null;
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, id);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    client = new Client(id,getNome(), getEmail(),getPhone());
+                    client.setId(rs.getInt("id_client"));
+                    client.setNome(rs.getString("nom"));
+                    client.setEmail(rs.getString("email"));
+                    client.setPhone(rs.getString("telephone"));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la recherche : " + e.getMessage());
+        }
+
+        return client;
+    }
+
+
+
     public void AjouterClient(Scanner input) {
         System.out.println("--- Inscription Nouveau Client ---");
 
@@ -108,7 +135,7 @@ public class Client extends Person {
                 return;
         }
 
-        String sql = "UPDATE clients SET " + nomColonne + " = ? WHERE id = ?";
+        String sql = "UPDATE client SET " + nomColonne + " = ? WHERE id_client = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -131,7 +158,7 @@ public class Client extends Person {
         int id = input.nextInt();
         input.nextLine();
 
-        String sql = "DELETE FROM clients WHERE id = ?";
+        String sql = "DELETE FROM client WHERE id_client = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -154,14 +181,14 @@ public class Client extends Person {
     public void listerClient() {
         System.out.println("======= Données clients (MySQL) ===========");
 
-        String sql = "SELECT * FROM clients";
+        String sql = "SELECT * FROM client";
 
         try (Connection conn = DBConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                int id = rs.getInt("id");
+                int id = rs.getInt("id_client");
                 String name = rs.getString("nom");
                 String email = rs.getString("email");
                 String phone = rs.getString("telephone");
@@ -181,12 +208,12 @@ public class Client extends Person {
     }
 
     public void RechercherClient(Scanner input) {
-        System.out.println("===== Rechercher Client (MySQL) =====");
+        System.out.println("===== Rechercher Client =====");
         System.out.print("Entrez le numéro id: ");
         int id = input.nextInt();
         input.nextLine();
 
-        String sql = "SELECT * FROM clients WHERE id = ?";
+        String sql = "SELECT * FROM client WHERE id_client = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -195,11 +222,12 @@ public class Client extends Person {
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    System.out.println("ID trouvé !");
-                    System.out.println("id    : " + rs.getInt("id"));
+                    System.out.println("==========ID trouvé=============== !");
+                    System.out.println("id    : " + rs.getInt("id_client"));
                     System.out.println("Nom   : " + rs.getString("nom"));
                     System.out.println("Email : " + rs.getString("email"));
                     System.out.println("Phone : " + rs.getString("telephone"));
+                    System.out.println("==================================================");
                 } else {
                     System.out.println("Cet ID n’existe pas dans la base de données.");
                 }

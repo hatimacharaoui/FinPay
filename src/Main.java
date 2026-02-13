@@ -1,9 +1,12 @@
+import java.util.Date;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         Client client = new Client(1,"zakaria", "zakaria@enaa.ma", "+212 607523048");
+        Facture facture = new Facture();
+        Paiement paiement = new Paiement(1, new Date(), client,facture, false, 12.12);
 
         int choiceMenu = 0;
 
@@ -14,6 +17,8 @@ public class Main {
             System.out.println("3. supprime Client");
             System.out.println("4. desply Client");
             System.out.println("5. Rechercher Client");
+            System.out.println("6. Enregistrer Paiment");
+            System.out.println("7. Lister Paiment");
             System.out.println("0. se déconnecter");
 
             System.out.println("Entrez le choice: ");
@@ -35,6 +40,12 @@ public class Main {
                     break;
                 case 5:
                     client.RechercherClient(input);
+                    break;
+                case 6:
+                    paiement.enregistrerPaiment(input);
+                    break;
+                case 7:
+                    paiement.listerPaiement();
                     break;
                 case 0:
                     System.out.println("À bientôt");
