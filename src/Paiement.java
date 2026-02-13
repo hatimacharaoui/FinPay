@@ -68,31 +68,35 @@ public class Paiement {
         this.totalPaiment = totalPaiment;
     }
 
+
+
     public void enregistrerPaiment(Scanner input) {
-        System.out.println("--- Nouveau Paiement ---");
+        System.out.println("==== Nouveau Paiement ====");
         System.out.print("Entrez le numéro id du client : ");
-        int id = input.nextInt();
+        int idClient = input.nextInt();
         input.nextLine();
 
-        Client c = client.findId(id);
+        Client c = client.findId(idClient);
         if (c == null) {
             System.out.println("Cet ID n’existe pas.");
             return;
         }
+
         try (Connection conn = DBConnection.getConnection()) {
-            String sqlSelectFactures = "SELECT id_facture, montant_total, statut FROM facture WHERE id_client = ? AND statut != 'PAYEE'";
+            String sqlInfo = "SELECT f.id_facture, f.montant_total, " +
+                    "(SELECT COALESCE(SUM(totalPaiment), 0) FROM paiement p WHERE p.id_facture = f.id_facture) as deja_paye " +
+                    "FROM facture f WHERE f.id_client = ? AND f.statut != 'PAYEE'";
 
-            try (PreparedStatement psFactures = conn.prepareStatement(sqlSelectFactures)) {
-                psFactures.setInt(1, id);
-                ResultSet rs = psFactures.executeQuery();
+            try (PreparedStatement psInfo = conn.prepareStatement(sqlInfo)) {
+                psInfo.setInt(1, idClient);
+                ResultSet rs = psInfo.executeQuery();
 
-                System.out.println("\n--- Factures en attente pour " + c.getNome() + " ---");
+                System.out.println("==== Factures en attente pour " + c.getNome() + " ====");
                 boolean hasFactures = false;
                 while (rs.next()) {
                     hasFactures = true;
-                    System.out.println("ID Facture: " + rs.getInt("id_facture") +
-                            " | Montant: " + rs.getDouble("montant_total") +
-                            " | Statut: " + rs.getString("statut"));
+                    double reste = rs.getDouble("montant_total") - rs.getDouble("deja_paye");
+                    System.out.println("ID Facture: " + rs.getInt("id_facture") + " | Total: " + reste + " DH");
                 }
 
                 if (!hasFactures) {
@@ -103,34 +107,83 @@ public class Paiement {
 
             System.out.print("Entrez l'ID de la facture à régler : ");
             int idF = input.nextInt();
-            System.out.print("Entrez le montant du paiement : ");
-            double montant = input.nextDouble();
 
-            double commission = (montant * 2.0) / 100;
-
-            String sqlInsert = "INSERT INTO paiement (id_client, totalPaiment, date_paiment, commission) VALUES (?, ?, ?, ?)";
-            try (PreparedStatement psInsert = conn.prepareStatement(sqlInsert)) {
-                psInsert.setInt(1, id);
-                psInsert.setDouble(2, montant);
-                psInsert.setTimestamp(3, new java.sql.Timestamp(System.currentTimeMillis()));
-                psInsert.setDouble(4, commission);
-                psInsert.executeUpdate();
-
-                String sqlUpdateFacture = "UPDATE facture SET statut = (CASE WHEN montant_total <= ? THEN 'PAYEE' ELSE 'PARTIEL' END) WHERE id_facture = ?";
-                try (PreparedStatement psUpdate = conn.prepareStatement(sqlUpdateFacture)) {
-                    psUpdate.setDouble(1, montant);
-                    psUpdate.setInt(2, idF);
-                    psUpdate.executeUpdate();
+            double montantTotal = 0;
+            double dejaPayeAncien = 0;
+            String sqlDetail = "SELECT montant_total, (SELECT COALESCE(SUM(totalPaiment), 0) FROM paiement WHERE id_facture = ?) as deja_paye FROM facture WHERE id_facture = ?";
+            try (PreparedStatement psDetail = conn.prepareStatement(sqlDetail)) {
+                psDetail.setInt(1, idF);
+                psDetail.setInt(2, idF);
+                ResultSet rsD = psDetail.executeQuery();
+                if (rsD.next()) {
+                    montantTotal = rsD.getDouble("montant_total");
+                    dejaPayeAncien = rsD.getDouble("deja_paye");
+                } else {
+                    System.out.println("Facture introuvable.");
+                    return;
                 }
-
-                System.out.println("Paiement enregistré avec succès !");
-                System.out.println("Commission (2%) : " + commission + " DH");
             }
 
+            double resteAPayerActuel = montantTotal - dejaPayeAncien;
+
+            System.out.print("S'agit-il d'un paiement partiel ? (oui/non) : ");
+            input.nextLine();
+            String choiceP = input.nextLine().trim().toLowerCase();
+
+            System.out.print("Entrez le montant à verser : ");
+            double montantVerse = input.nextDouble();
+
+            if (choiceP.equals("non")) {
+                if (montantVerse < resteAPayerActuel) {
+                    System.out.println("Erreur: Montant insuffisant pour un paiement complet ! (" + resteAPayerActuel + " DH requis)");
+                    return;
+                }
+            } else if (choiceP.equals("oui")) {
+                if (montantVerse >= resteAPayerActuel) {
+                    System.out.println("Erreur: Le montant partiel doit être inférieur au reste à payer.");
+                    return;
+                }
+            }
+
+            gererPaiementsPartiels(conn, idClient, idF, montantVerse, resteAPayerActuel);
+
         } catch (SQLException e) {
-            System.out.println("Erreur SQL : " + e.getMessage());
+            System.out.println("Erreur base de données : " + e.getMessage());
         }
     }
+
+
+    public void gererPaiementsPartiels(Connection conn, int idClient, int idFacture, double montantVerse, double resteAPayerAvant) throws SQLException {
+        double commission = (montantVerse * 2.0) / 100;
+        double resteFinal = resteAPayerAvant - montantVerse;
+
+        String sqlInsert = "INSERT INTO paiement (id_client, id_facture, totalPaiment, date_paiment, commission) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement psInsert = conn.prepareStatement(sqlInsert)) {
+            psInsert.setInt(1, idClient);
+            psInsert.setInt(2, idFacture);
+            psInsert.setDouble(3, montantVerse);
+            psInsert.setTimestamp(4, new java.sql.Timestamp(System.currentTimeMillis()));
+            psInsert.setDouble(5, commission);
+            psInsert.executeUpdate();
+        }
+
+        String nouveauStatut = (resteFinal <= 0.01) ? "PAYEE" : "PARTIEL";
+
+        String sqlUpdate = "UPDATE facture SET statut = ? WHERE id_facture = ?";
+        try (PreparedStatement psUpdate = conn.prepareStatement(sqlUpdate)) {
+            psUpdate.setString(1, nouveauStatut);
+            psUpdate.setInt(2, idFacture);
+            psUpdate.executeUpdate();
+        }
+
+        System.out.println("==== Résumé de la transaction ====");
+        System.out.println("Montant versé : " + montantVerse + " DH");
+        System.out.println("Commission (2%) : " + commission + " DH");
+        System.out.println("Nouveau statut de la facture : " + nouveauStatut);
+        System.out.println("Reste à payer : " + (resteFinal < 0 ? 0 : resteFinal) + " DH");
+        System.out.println("==========================================================");
+    }
+
 
     public void listerPaiement(){
         System.out.println("========lister paiement=============");
@@ -149,7 +202,7 @@ public class Paiement {
                 System.out.println("Name: " + totalpayment);
                 System.out.println("commission: " + commission);
                 System.out.println("date paiment: " + date_paiment);
-                System.out.println("-----------------------------------");
+                System.out.println("========================================");
             }
 
         } catch (SQLException e) {

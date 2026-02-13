@@ -57,7 +57,7 @@ public class Client extends Person {
 
 
     public void AjouterClient(Scanner input) {
-        System.out.println("--- Inscription Nouveau Client ---");
+        System.out.println("=== Inscription Nouveau Client ===");
 
         System.out.print("Entrez le nom : ");
         String name = input.nextLine();
@@ -179,7 +179,7 @@ public class Client extends Person {
     }
 
     public void listerClient() {
-        System.out.println("======= Données clients (MySQL) ===========");
+        System.out.println("======= Données clients===========");
 
         String sql = "SELECT * FROM client";
 
@@ -197,7 +197,7 @@ public class Client extends Person {
                 System.out.println("Name: " + name);
                 System.out.println("Email: " + email);
                 System.out.println("Phone: " + phone);
-                System.out.println("-----------------------------------");
+                System.out.println("===============================================");
             }
 
         } catch (SQLException e) {
@@ -222,7 +222,7 @@ public class Client extends Person {
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    System.out.println("==========ID trouvé=============== !");
+                    System.out.println("==========ID trouvé===============");
                     System.out.println("id    : " + rs.getInt("id_client"));
                     System.out.println("Nom   : " + rs.getString("nom"));
                     System.out.println("Email : " + rs.getString("email"));

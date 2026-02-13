@@ -11,7 +11,7 @@ public class Main {
         int choiceMenu = 0;
 
         do {
-            System.out.println("app FinPay");
+            System.out.println("==========app FinPay============");
             System.out.println("1. Ajoute Client");
             System.out.println("2. Modifier Client");
             System.out.println("3. supprime Client");
