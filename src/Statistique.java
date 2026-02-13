@@ -9,12 +9,10 @@ import java.util.List;
 public class Statistique {
     private double commissions;
     private double totalPaiements;
-    private List<Facture> factures;
 
-    public Statistique (double commissions, double totalPaiements, List<Facture> factures) {
+    public Statistique (double commissions, double totalPaiements) {
         this.commissions = commissions;
         this.totalPaiements = totalPaiements;
-        this.factures = factures;
     }
 
     public void calculateTotalPaidAmount() {
