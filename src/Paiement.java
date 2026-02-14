@@ -1,3 +1,4 @@
+
 import java.sql.*;
 import java.util.Date;
 import java.util.Scanner;
@@ -11,6 +12,7 @@ public class Paiement {
     private double totalPaiment;
 
 
+    public Paiement () {};
     public Paiement(int id, Date date, Client client, Facture facture, boolean paiementPartiel, double totalPaiment) {
         this.id = id;
         this.date = date;

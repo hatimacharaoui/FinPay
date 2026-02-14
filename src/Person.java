@@ -1,6 +1,9 @@
+
 public class Person {
     private int id;
     private String nome;
+
+    public Person () {};
 
     public Person(int id, String nome) {
         this.id = id;

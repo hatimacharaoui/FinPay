@@ -1,3 +1,4 @@
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,10 +10,14 @@ import java.util.List;
 public class Statistique {
     private double commissions;
     private double totalPaiements;
+    private List<Facture> factures;
 
-    public Statistique (double commissions, double totalPaiements) {
+    public Statistique () {}
+
+    public Statistique (double commissions, double totalPaiements, List<Facture> factures) {
         this.commissions = commissions;
         this.totalPaiements = totalPaiements;
+        this.factures = factures;
     }
 
     public void calculateTotalPaidAmount() {
@@ -27,13 +32,10 @@ public class Statistique {
     }
 
     public double calculateTotalCommissions() {
-        String query = "SELECT SUM(montant_commission) FROM Paiement";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet res = stmt.executeQuery()) {
+        String query = "SELECT SUM(commission_fee) FROM Paiement";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet res = stmt.executeQuery()) {
             if (res.next()) {
                 this.commissions = res.getDouble(1);
-                System.out.println("GAIN TOTAL DES COMMISSIONS : " + this.commissions);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -94,6 +96,22 @@ public class Statistique {
 
                 this.factures.add(f);
                 System.out.println("Facture id : " + f.getId() + " | Statut : " + f.getStatut());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getTotalGainByCommissions() {
+        String query = "SELECT SUM(montant_commission) FROM paiement";
+
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            if (resultSet.next()) {
+                this.commissions = resultSet.getDouble(1);
+                System.out.println("GAIN TOTAL DES COMMISSIONS : " + this.commissions);
             }
         } catch (SQLException e) {
             e.printStackTrace();
