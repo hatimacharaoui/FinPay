@@ -67,13 +67,13 @@ public class Client extends Person {
         System.out.println("=== Inscription Nouveau Client ===");
 
         System.out.print("Entrez le nom : ");
-        String name = input.nextLine();
+        String name = input.next();
 
         System.out.print("Entrez l'email: ");
-        String email = input.nextLine();
+        String email = input.next();
 
         System.out.print("Entrez le numéro de téléphone: ");
-        String phone = input.nextLine();
+        String phone = input.next();
 
         String sql = "INSERT INTO client (nom, email, telephone) VALUES (?, ?, ?)";
 

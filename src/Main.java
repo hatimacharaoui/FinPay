@@ -47,7 +47,10 @@ public class Main {
 
                         switch (choixClient) {
                             case 1 -> client.AjouterClient(sc);
+                            case 2 -> client.ModifierClient(sc);
+                            case 3 -> client.supprimeClient(sc);
                             case 4 -> client.listerClient();
+                            case 5 -> client.RechercherClient(sc);
                         }
 
                     } while (choixClient != 0);
@@ -113,9 +116,9 @@ public class Main {
                         choixPaiement = sc.nextInt();
 
                         switch (choixPaiement) {
-                            case 1 -> paiement.enregistrerPaiment(sc);
-                            case 3 -> paiement.listerPaiement();
-                            case 4 -> paiement.gererPaiementsPartiels();
+                            case 1 -> paiement.enregistrerPaiement(sc);
+                            case 3 -> paiement.listerPaiements();
+                            case 4 -> paiement.enregistrerPaiement(sc);
                         }
 
                     } while (choixPaiement != 0);
@@ -136,16 +139,16 @@ public class Main {
 
                         switch (choixStatistique) {
                             case 1 -> statistique.calculateTotalPaidAmount();
-                            case 2 -> statistique.calculateTotalCommissions();
+                            case 2 -> statistique.getTotalGainByCommissions();
                             case 3 -> statistique.getPaidInvoices();
                             case 4 -> statistique.getUnpaidInvoices();
                         }
 
                     } while (choixStatistique != 0);
                 }
-                case 6 :
-                    FacturePDF.genererFacture();
-
+                case 6 -> {
+                    facturePDF.genererFacture();
+                }
                 default -> System.out.println("Choix invalide ");
             }
 
