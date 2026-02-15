@@ -1,13 +1,11 @@
-import java.io.FileNotFoundException;
+    import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) throws SQLException, FileNotFoundException {
-
         Scanner sc = new Scanner(System.in);
-
         Client client = new Client();
         Prestataire prestataire = new Prestataire();
         Facture facture = new Facture();
@@ -84,7 +82,6 @@ public class Main {
                         System.out.println("3. Supprimer");
                         System.out.println("4. Lister");
                         System.out.println("5. Filtrer par statut");
-                        System.out.println("6. Filtrer par prestataire");
                         System.out.println("0. Retour");
 
                         choixFacture = sc.nextInt();
@@ -94,6 +91,7 @@ public class Main {
                             case 2 -> prestataire.modifieFacture();
                             case 3 -> prestataire.DeleteFature();
                             case 4 -> prestataire.afficherFacture();
+                            case 5 -> prestataire.filterFactureParStatut();
                         }
 
                     } while (choixFacture != 0);
