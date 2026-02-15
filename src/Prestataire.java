@@ -5,7 +5,7 @@
             import java.util.List;
             import java.util.Scanner;
 
-            public class Prestataire extends Person{
+            public class Prestataire extends Person{g
                 private  String secteur;
                 Scanner sc = new Scanner(System.in);
 
@@ -151,6 +151,7 @@
 
                 }
 
+    public void DeleteFature() {
 
     public void afficherFacture() throws SQLException {
 

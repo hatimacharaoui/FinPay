@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 public class FacturePDF {
 
-    public static void genererFacture() throws SQLException, FileNotFoundException {
+    public void genererFacture() throws SQLException, FileNotFoundException {
 
         Scanner sc = new Scanner(System.in);
         System.out.print("Entrer ID Facture : ");
@@ -32,14 +32,12 @@ public class FacturePDF {
 
                 document.open();
 
-                document.add(new Paragraph("===== FACTURE FinPay ====="));
+                document.add(new Paragraph("===== FACTURE ====="));
                 document.add(new Paragraph("ID: " + idFacture));
                 document.add(new Paragraph("Montant: " + rs.getDouble("montant_total")));
                 document.add(new Paragraph("Statut: " + rs.getString("statut")));
 
                 document.close();
-
-                System.out.println("Facture PDF générée avec succès ");
 
             } else {
                 System.out.println(" Facture introuvable ");
