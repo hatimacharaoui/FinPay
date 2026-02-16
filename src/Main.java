@@ -108,17 +108,14 @@ public class Main {
                     do {
                         System.out.println("\n--- Section paiement ---");
                         System.out.println("1. Enregistrer");
-                        System.out.println("2. Modifier");
-                        System.out.println("3. Lister");
-                        System.out.println("4. Paiement partiel");
+                        System.out.println("2. Lister");
                         System.out.println("0. Retour");
 
                         choixPaiement = sc.nextInt();
 
                         switch (choixPaiement) {
                             case 1 -> paiement.enregistrerPaiement(sc);
-                            case 3 -> paiement.listerPaiements();
-                            case 4 -> paiement.enregistrerPaiement(sc);
+                            case 2 -> paiement.listerPaiements();
                         }
 
                     } while (choixPaiement != 0);
