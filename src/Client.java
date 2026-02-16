@@ -9,13 +9,14 @@ public class Client extends Person {
 
     public Client() {
     }
-    public Client(int clientId) {
-        super(clientId, "");
-    }
+
     public Client(int id, String nome, String email, String phone) {
         super(id, nome);
         this.email = email;
         this.phone = phone;
+    }
+
+    public Client(int clientId) {
     }
 
     public String getEmail() {
@@ -63,7 +64,6 @@ public class Client extends Person {
 
 
     public void AjouterClient(Scanner input) {
-        input.nextLine();
         System.out.println("=== Inscription Nouveau Client ===");
 
         System.out.print("Entrez le nom : ");
