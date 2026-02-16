@@ -9,7 +9,7 @@ import java.util.List;
 public class Statistique {
     private double commissions;
     private double totalPaiements;
-    private List<Facture> factures;
+    private List<Facture> factures = new ArrayList<>();
 
     public Statistique () {}
 
@@ -143,7 +143,7 @@ public class Statistique {
 
 
     public void getTotalGainByCommissions() {
-        String query = "SELECT SUM(montant_commission) FROM paiement";
+        String query = "SELECT SUM(commission) FROM paiement";
 
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query);
