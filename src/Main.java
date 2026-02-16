@@ -14,6 +14,7 @@ public class Main {
         Paiement paiement = new Paiement();
         Statistique statistique = new Statistique();
         FacturePDF facturePDF = new FacturePDF();
+        RapportExcel rapportExcel = new RapportExcel();
 
         int choix1;
 
