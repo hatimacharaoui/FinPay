@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/FinPay.iml" filepath="$PROJECT_DIR$/FinPay.iml" />
+      <module fileurl="file://$PROJECT_DIR$/testmaven.iml" filepath="$PROJECT_DIR$/testmaven.iml" />
     </modules>
   </component>
 </project>
