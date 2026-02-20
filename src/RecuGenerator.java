@@ -67,7 +67,7 @@ public class RecuGenerator {
 
                 document.close();
 
-                System.out.println("Reçu généré : " + filename);
+                System.out.println("Reçu généré NOW: " + filename);
             }
 
         } catch (Exception e) {
