@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+
 import java.util.Scanner;
 import java.sql.*;
 
@@ -6,10 +6,16 @@ public class Client extends Person {
     private String email;
     private String phone;
 
+    public Client() {
+    }
+
     public Client(int id, String nome, String email, String phone) {
         super(id, nome);
         this.email = email;
         this.phone = phone;
+    }
+
+    public Client(int clientId) {
     }
 
     public String getEmail() {
@@ -60,13 +66,13 @@ public class Client extends Person {
         System.out.println("=== Inscription Nouveau Client ===");
 
         System.out.print("Entrez le nom : ");
-        String name = input.nextLine();
+        String name = input.next();
 
         System.out.print("Entrez l'email: ");
-        String email = input.nextLine();
+        String email = input.next();
 
         System.out.print("Entrez le numéro de téléphone: ");
-        String phone = input.nextLine();
+        String phone = input.next();
 
         String sql = "INSERT INTO client (nom, email, telephone) VALUES (?, ?, ?)";
 
@@ -237,7 +243,6 @@ public class Client extends Person {
             System.out.println("Erreur lors de la recherche : " + e.getMessage());
         }
     }
-
 
 
 
