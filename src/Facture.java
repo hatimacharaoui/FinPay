@@ -11,6 +11,12 @@ public class Facture {
     private double  montant;
 
     public Facture() {}
+    public Facture(int id, double montant, String statut, LocalDate date) {
+        this.id = id;
+        this.montant=montant;
+        this.statut = statut;
+        this.date = date;
+    }
     public Facture(int id, double montant, String statut, LocalDate date, Client client, Prestataire prestataire) {
         this.id = id;
         this.montant=montant;

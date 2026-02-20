@@ -10,11 +10,13 @@ public class Main {
 
         Client client = new Client();
         Prestataire prestataire = new Prestataire();
-        Facture facture = new Facture();
         Paiement paiement = new Paiement();
         Statistique statistique = new Statistique();
         FacturePDF facturePDF = new FacturePDF();
         RapportExcel rapportExcel = new RapportExcel();
+        Facturesprestatairemois facturesprestatairemois = new Facturesprestatairemois();
+        FacturesExcel facturesExcel = new FacturesExcel();
+        RecuGenerator recuGenerator = new RecuGenerator();
 
         int choix1;
 
@@ -25,7 +27,11 @@ public class Main {
             System.out.println("3. Gestion Factures");
             System.out.println("4. Gestion Paiements");
             System.out.println("5. Statistiques");
-            System.out.println("6. generer une Facture");
+            System.out.println("6. Génerer une Facture (PDF)");
+            System.out.println("7. Générer un Reçu de Paiement (PDF) ");
+            System.out.println("8. Générer une Facture d'un Prestataire (Excel) ");
+            System.out.println("9. Générer un Rapport Global Mensuel (Excel) ");
+            System.out.println("10. Export des Factures Impayées (Excel) ");
             System.out.println("0. Quitter");
 
             System.out.print("Enter votre Choix : ");
@@ -33,7 +39,7 @@ public class Main {
 
             switch (choix1) {
 
-                case 1 -> {
+                case 1 :
                     int choixClient;
                     do {
                         System.out.println("\n--- Section Client ---");
@@ -47,18 +53,28 @@ public class Main {
                         choixClient = sc.nextInt();
 
                         switch (choixClient) {
-                            case 1 -> client.AjouterClient(sc);
-                            case 2 -> client.ModifierClient(sc);
-                            case 3 -> client.supprimeClient(sc);
-                            case 4 -> client.listerClient();
-                            case 5 -> client.RechercherClient(sc);
+                            case 1 :
+                                client.AjouterClient(sc);
+                                break;
+                            case 2 :
+                                client.ModifierClient(sc);
+                                break;
+                            case 3 :
+                                client.supprimeClient(sc);
+                                break;
+                            case 4 :
+                                client.listerClient();
+                                break;
+                            case 5 :
+                                client.RechercherClient(sc);
+                                break;
                         }
 
                     } while (choixClient != 0);
-                }
+                    break;
 
 
-                case 2 -> {
+                case 2 :
                     int choixPrestataire;
                     do {
                         System.out.println("\n--- Section Prestataire ---");
@@ -72,14 +88,15 @@ public class Main {
                         choixPrestataire = sc.nextInt();
 
                         switch (choixPrestataire) {
-                            case 1 -> prestataire.AjouterP();
+                            case 1 :
+                                prestataire.AjouterP();
+                                break;
                         }
 
                     } while (choixPrestataire != 0);
-                }
+                    break;
 
-
-                case 3 -> {
+                case 3 :
                     int choixFacture;
                     do {
                         System.out.println("\n--- Section Facture ---");
@@ -94,17 +111,24 @@ public class Main {
                         choixFacture = sc.nextInt();
 
                         switch (choixFacture) {
-                            case 1 -> prestataire.AjouterFacture();
-                            case 2 -> prestataire.modifieFacture();
-                            case 3 -> prestataire.DeleteFature();
-                            case 4 -> prestataire.afficherFacture();
+                            case 1 :
+                                prestataire.AjouterFacture();
+                                break;
+                            case 2 :
+                                prestataire.modifieFacture();
+                                break;
+                            case 3 :
+                                prestataire.DeleteFature();
+                                break;
+                            case 4 :
+                                prestataire.afficherFacture();
+                                break;
                         }
 
                     } while (choixFacture != 0);
-                }
+                    break;
 
-
-                case 4 -> {
+                case 4 :
                     int choixPaiement;
                     do {
                         System.out.println("\n--- Section paiement ---");
@@ -115,15 +139,18 @@ public class Main {
                         choixPaiement = sc.nextInt();
 
                         switch (choixPaiement) {
-                            case 1 -> paiement.enregistrerPaiement(sc);
-                            case 2 -> paiement.listerPaiements();
+                            case 1 :
+                                paiement.enregistrerPaiement(sc);
+                                break;
+                            case 2 :
+                                paiement.listerPaiements();
+                                break;
                         }
 
                     } while (choixPaiement != 0);
-                }
+                    break;
 
-
-                case 5 -> {
+                case 5 :
                     int choixStatistique;
                     do {
                         System.out.println("\n--- Section Statistiques ---");
@@ -136,18 +163,40 @@ public class Main {
                         choixStatistique = sc.nextInt();
 
                         switch (choixStatistique) {
-                            case 1 -> statistique.calculateTotalPaidAmount();
-                            case 2 -> statistique.getTotalGainByCommissions();
-                            case 3 -> statistique.getPaidInvoices();
-                            case 4 -> statistique.getUnpaidInvoices();
+                            case 1 :
+                                statistique.calculateTotalPaidAmount();
+                                break;
+                            case 2 :
+                                statistique.getTotalGainByCommissions();
+                                break;
+                            case 3 :
+                                statistique.getPaidInvoices();
+                                break;
+                            case 4 :
+                                statistique.getUnpaidInvoices();
+                                break;
                         }
 
                     } while (choixStatistique != 0);
-                }
-                case 6 -> {
+                    break;
+
+                case 6 :
                     facturePDF.genererFacture();
-                }
-                default -> System.out.println("Choix invalide ");
+                    break;
+                case 7 :
+                    recuGenerator.genererDernierRecu();
+                    break;
+                case 8 :
+                    facturesprestatairemois.excecute();
+                    break;
+                case 9 :
+                    rapportExcel.genererRapportGlobalMensuel();
+                    break;
+                case 10 :
+                    facturesExcel.exporterFacturesImpayees();
+                    break;
+
+                default : System.out.println("Choix invalide ");
             }
 
         } while (choix1 != 0);
