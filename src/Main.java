@@ -1,17 +1,20 @@
-    import java.io.FileNotFoundException;
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) throws SQLException, FileNotFoundException {
+
         Scanner sc = new Scanner(System.in);
+
         Client client = new Client();
         Prestataire prestataire = new Prestataire();
         Facture facture = new Facture();
         Paiement paiement = new Paiement();
         Statistique statistique = new Statistique();
         FacturePDF facturePDF = new FacturePDF();
+        RapportExcel rapportExcel = new RapportExcel();
 
         int choix1;
 
@@ -85,6 +88,7 @@ public class Main {
                         System.out.println("3. Supprimer");
                         System.out.println("4. Lister");
                         System.out.println("5. Filtrer par statut");
+                        System.out.println("6. Filtrer par prestataire");
                         System.out.println("0. Retour");
 
                         choixFacture = sc.nextInt();
@@ -94,7 +98,6 @@ public class Main {
                             case 2 -> prestataire.modifieFacture();
                             case 3 -> prestataire.DeleteFature();
                             case 4 -> prestataire.afficherFacture();
-                            case 5 -> prestataire.filterFactureParStatut();
                         }
 
                     } while (choixFacture != 0);
@@ -106,17 +109,14 @@ public class Main {
                     do {
                         System.out.println("\n--- Section paiement ---");
                         System.out.println("1. Enregistrer");
-                        System.out.println("2. Modifier");
-                        System.out.println("3. Lister");
-                        System.out.println("4. Paiement partiel");
+                        System.out.println("2. Lister");
                         System.out.println("0. Retour");
 
                         choixPaiement = sc.nextInt();
 
                         switch (choixPaiement) {
                             case 1 -> paiement.enregistrerPaiement(sc);
-                            case 3 -> paiement.listerPaiements();
-                            case 4 -> paiement.enregistrerPaiement(sc);
+                            case 2 -> paiement.listerPaiements();
                         }
 
                     } while (choixPaiement != 0);

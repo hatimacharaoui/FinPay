@@ -1,4 +1,3 @@
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,7 +9,7 @@ import java.util.List;
 public class Statistique {
     private double commissions;
     private double totalPaiements;
-    private List<Facture> factures;
+    private List<Facture> factures = new ArrayList<>();
 
     public Statistique () {}
 
@@ -74,26 +73,22 @@ public class Statistique {
                 double montant = resultSet.getDouble("montant_total");
 
                 java.sql.Date dbDate = resultSet.getDate("date_facture");
-                java.util.Date date = (dbDate != null) ? new java.util.Date(dbDate.getTime()) : null;
+                LocalDate date = (dbDate != null) ? dbDate.toLocalDate() : null;
 
                 String statut = resultSet.getString("statut");
 
                 Client client = new Client();
                 Prestataire prestataire = new Prestataire();
 
-<<<<<<< HEAD
-                // Facture f = new Facture(id, paiement, statut, date, client, prestataire);
-=======
 
                 Facture f = new Facture(id, montant, statut, date, client, prestataire);
 
->>>>>>> cd4ffc184c11cb7d51e7619135b270e93a05bde9
                 this.factures.add(f);
 
                 System.out.println("Facture ID : "
                         + f.getId()
                         + " | Statut : "
-                        + f.getStatut());
+                        + f.getStatut() + " | Date: " + f.getDate());
             }
 
         } catch (SQLException e) {
@@ -121,10 +116,7 @@ public class Statistique {
                 double montant = resultSet.getDouble("montant_total");
 
                 java.sql.Date dbDate = resultSet.getDate("date_facture");
-                java.util.Date date = (dbDate != null)
-                        ? new java.util.Date(dbDate.getTime())
-                        : null;
-
+                LocalDate date = (dbDate != null) ? dbDate.toLocalDate() : null;
                 String statut = resultSet.getString("statut");
 
                 Client client = new Client();
@@ -138,7 +130,7 @@ public class Statistique {
                 System.out.println("Facture id : "
                         + f.getId()
                         + " | Statut : "
-                        + f.getStatut());
+                        + f.getStatut() + " | Date: " + f.getDate());
             }
 
         } catch (SQLException e) {
@@ -148,7 +140,7 @@ public class Statistique {
 
 
     public void getTotalGainByCommissions() {
-        String query = "SELECT SUM(montant_commission) FROM paiement";
+        String query = "SELECT SUM(commission) FROM paiement";
 
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query);

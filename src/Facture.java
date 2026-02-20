@@ -1,5 +1,6 @@
 
 import java.time.LocalDate;
+import java.util.Date;
 
 public class Facture {
     private int id ;
@@ -9,6 +10,7 @@ public class Facture {
     private Client client;
     private double  montant;
 
+    public Facture() {}
     public Facture(int id, double montant, String statut, LocalDate date, Client client, Prestataire prestataire) {
         this.id = id;
         this.montant=montant;
@@ -17,6 +19,7 @@ public class Facture {
         this.client= client;
         this.prestataire = prestataire;
     }
+
 
     public Client getClient() {return client;}
     public int getId() {return id;}
