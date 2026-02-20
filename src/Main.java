@@ -14,7 +14,7 @@ public class Main {
         Paiement paiement = new Paiement();
         Statistique statistique = new Statistique();
         FacturePDF facturePDF = new FacturePDF();
-        Facturesprestatairemois facturesprestatairemois = new Facturesprestatairemois();
+        RapportExcel rapportExcel = new RapportExcel();
 
         int choix1;
 
@@ -26,12 +26,10 @@ public class Main {
             System.out.println("4. Gestion Paiements");
             System.out.println("5. Statistiques");
             System.out.println("6. generer une Facture");
-            System.out.println("7. generer une factures prestataire mois");
             System.out.println("0. Quitter");
 
             System.out.print("Enter votre Choix : ");
             choix1 = sc.nextInt();
-            sc.nextLine();
 
             switch (choix1) {
 
@@ -47,7 +45,6 @@ public class Main {
                         System.out.println("0. Retour");
 
                         choixClient = sc.nextInt();
-                        sc.nextLine();
 
                         switch (choixClient) {
                             case 1 -> client.AjouterClient(sc);
@@ -73,7 +70,6 @@ public class Main {
                         System.out.println("0. Retour");
 
                         choixPrestataire = sc.nextInt();
-                        sc.nextLine();
 
                         switch (choixPrestataire) {
                             case 1 -> prestataire.AjouterP();
@@ -96,7 +92,6 @@ public class Main {
                         System.out.println("0. Retour");
 
                         choixFacture = sc.nextInt();
-                        sc.nextLine();
 
                         switch (choixFacture) {
                             case 1 -> prestataire.AjouterFacture();
@@ -118,7 +113,6 @@ public class Main {
                         System.out.println("0. Retour");
 
                         choixPaiement = sc.nextInt();
-                        sc.nextLine();
 
                         switch (choixPaiement) {
                             case 1 -> paiement.enregistrerPaiement(sc);
@@ -140,7 +134,6 @@ public class Main {
                         System.out.println("0. Retour");
 
                         choixStatistique = sc.nextInt();
-                        sc.nextLine();
 
                         switch (choixStatistique) {
                             case 1 -> statistique.calculateTotalPaidAmount();
@@ -153,9 +146,6 @@ public class Main {
                 }
                 case 6 -> {
                     facturePDF.genererFacture();
-                }
-                case 7->{
-                    facturesprestatairemois.excecute();
                 }
                 default -> System.out.println("Choix invalide ");
             }

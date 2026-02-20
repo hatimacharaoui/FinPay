@@ -1,3 +1,4 @@
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -6,9 +7,9 @@ import java.sql.*;
 public class DBConnection {
 
     private static final String URL =
-            "jdbc:mysql://sql7.freesqldatabase.com:3306/sql7817309";
-    private static final String USER = "sql7817309";
-    private static final String PASSWORD = "z1kDSsF4iL";
+            "jdbc:mysql://127.0.0.1:3306/finpay_db";
+    private static final String USER = "root";
+    private static final String PASSWORD = "";
 
     private DBConnection() {}
 

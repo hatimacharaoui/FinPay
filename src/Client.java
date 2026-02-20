@@ -1,4 +1,5 @@
 
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.sql.*;
 
@@ -243,6 +244,7 @@ public class Client extends Person {
             System.out.println("Erreur lors de la recherche : " + e.getMessage());
         }
     }
+
 
 
 

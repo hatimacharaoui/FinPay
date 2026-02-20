@@ -1,4 +1,3 @@
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -74,7 +73,7 @@ public class Statistique {
                 double montant = resultSet.getDouble("montant_total");
 
                 java.sql.Date dbDate = resultSet.getDate("date_facture");
-                java.util.Date date = (dbDate != null) ? new java.util.Date(dbDate.getTime()) : null;
+                LocalDate date = (dbDate != null) ? dbDate.toLocalDate() : null;
 
                 String statut = resultSet.getString("statut");
 
@@ -89,7 +88,7 @@ public class Statistique {
                 System.out.println("Facture ID : "
                         + f.getId()
                         + " | Statut : "
-                        + f.getStatut());
+                        + f.getStatut() + " | Date: " + f.getDate());
             }
 
         } catch (SQLException e) {
@@ -117,10 +116,7 @@ public class Statistique {
                 double montant = resultSet.getDouble("montant_total");
 
                 java.sql.Date dbDate = resultSet.getDate("date_facture");
-                java.util.Date date = (dbDate != null)
-                        ? new java.util.Date(dbDate.getTime())
-                        : null;
-
+                LocalDate date = (dbDate != null) ? dbDate.toLocalDate() : null;
                 String statut = resultSet.getString("statut");
 
                 Client client = new Client();
@@ -134,7 +130,7 @@ public class Statistique {
                 System.out.println("Facture id : "
                         + f.getId()
                         + " | Statut : "
-                        + f.getStatut());
+                        + f.getStatut() + " | Date: " + f.getDate());
             }
 
         } catch (SQLException e) {
