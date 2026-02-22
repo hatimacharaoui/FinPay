@@ -8,7 +8,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class FacturesExcel {
 
-    public void exporterFacturesImpayees() {
+    public static void exporterFacturesImpayees() {
 
         String sql = "SELECT f.id_facture, c.nom, f.date_facture, f.montant_total " +
                 "FROM facture f " +

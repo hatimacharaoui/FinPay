@@ -14,7 +14,7 @@ public class Main {
         Statistique statistique = new Statistique();
         FacturePDF facturePDF = new FacturePDF();
         RapportExcel rapportExcel = new RapportExcel();
-        Facturesprestatairemois facturesprestatairemois = new Facturesprestatairemois();
+        FacturePrestataireMois facturesprestatairemois = new FacturePrestataireMois();
         FacturesExcel facturesExcel = new FacturesExcel();
         RecuGenerator recuGenerator = new RecuGenerator();
 
@@ -181,19 +181,19 @@ public class Main {
                     break;
 
                 case 6 :
-                    facturePDF.genererFacture();
+                    FacturePDF.genererFacture();
                     break;
                 case 7 :
-                    recuGenerator.genererDernierRecu();
+                    RecuGenerator.genererDernierRecu();
                     break;
                 case 8 :
-                    facturesprestatairemois.excecute();
+                    FacturePrestataireMois.execute();
                     break;
                 case 9 :
-                    rapportExcel.genererRapportGlobalMensuel();
+                    RapportExcel.genererRapportGlobalMensuel();
                     break;
                 case 10 :
-                    facturesExcel.exporterFacturesImpayees();
+                    FacturesExcel.exporterFacturesImpayees();
                     break;
 
                 default : System.out.println("Choix invalide ");

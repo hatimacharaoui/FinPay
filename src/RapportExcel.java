@@ -10,15 +10,15 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class RapportExcel {
-    public void genererRapportGlobalMensuel() {
-        String query = "SELECT p.nom AS prestataire, " +
+    public static void genererRapportGlobalMensuel() {
+        String query = "SELECT " +
+                       "p.nom AS prestataire, " +
                        "COUNT(f.id_facture) AS nombre_factures, " +
-                       "COALESCE(SUM(f.montant_total), 0) AS total_genere, " +
-                       "COALESCE(SUM(pa.total_commissions), 0) AS total_commissions " +
-                       "FROM prestataire p " +
-                       "LEFT JOIN facture f ON p.id_prestataire = f.id_prestataire " +
-                       "LEFT JOIN (SELECT id_facture, SUM(commission) AS total_commissions FROM paiement GROUP BY id_facture) pa " +
-                       "ON f.id_facture = pa.id_facture " +
+                       "SUM(f.montant_total) AS total_genere, " +
+                       "SUM(pa.commission) AS total_commissions" +
+                       "FROM prestataire p" +
+                       "JOIN facture f ON p.id_prestataire = f.id_prestataire " +
+                       "JOIN paiement pa ON f.id_facture = pa.id_facture " +
                        "GROUP BY p.id_prestataire, p.nom";
 
         LocalDate now =  LocalDate.now();
@@ -52,10 +52,10 @@ public class RapportExcel {
                 row.createCell(0).setCellValue(resultSet.getString("prestataire"));
                 row.createCell(1).setCellValue(resultSet.getInt("nombre_factures"));
                 row.createCell(2).setCellValue(resultSet.getDouble("total_genere"));
-                row.createCell(3).setCellValue(resultSet.getDouble("total_commision"));
+                row.createCell(3).setCellValue(resultSet.getDouble("total_commissions"));
             }
 
-            for (int i = 1; i <= columns.length; i++) {
+            for (int i = 0; i <= columns.length; i++) {
                 sheet.autoSizeColumn(i);
             }
 
@@ -63,9 +63,9 @@ public class RapportExcel {
                 workbook.write(fileOut);
             }
 
-            System.out.println("✅ Rapport Excel généré avec succés : " + filename);
+            System.out.println("Rapport Excel généré avec succés : " + filename);
         } catch (Exception e) {
-            System.out.println("❌ Erreur lors de la génération du rapport Excel : " + e.getMessage());
+            System.out.println("Erreur lors de la génération du rapport Excel : " + e.getMessage());
             e.printStackTrace();
         }
     }
