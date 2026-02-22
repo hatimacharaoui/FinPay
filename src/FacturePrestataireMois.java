@@ -13,7 +13,7 @@ public class FacturePrestataireMois {
     public FacturePrestataireMois() {
     }
 
-    public void excecute(){
+    public static void execute(){
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Factures d’un Prestataire");
 

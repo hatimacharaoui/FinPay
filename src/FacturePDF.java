@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 public class FacturePDF {
 
-    public void genererFacture() throws SQLException, FileNotFoundException {
+    public static void genererFacture() throws SQLException, FileNotFoundException {
 
         Scanner sc = new Scanner(System.in);
         System.out.print("Entrer ID Facture : ");
