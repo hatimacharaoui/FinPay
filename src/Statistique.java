@@ -77,18 +77,10 @@ public class Statistique {
 
                 String statut = resultSet.getString("statut");
 
-                Client client = new Client();
-                Prestataire prestataire = new Prestataire();
-
-
-                Facture f = new Facture(id, montant, statut, date, client, prestataire);
-
-                this.factures.add(f);
-
                 System.out.println("Facture ID : "
-                        + f.getId()
+                        + id
                         + " | Statut : "
-                        + f.getStatut() + " | Date: " + f.getDate());
+                        + statut + " | Date: " + dbDate);
             }
 
         } catch (SQLException e) {
