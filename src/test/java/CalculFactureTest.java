@@ -16,16 +16,24 @@ public class CalculFactureTest {
     }
 
     @Test
-    @DisplayName("Doit retourner la somme correcte pour plusieurs factures")
-    void testCalculTotalPlusieursFactures() {
-        List<Double> factures = Arrays.asList(1500.0, 250.50, 300.0);
+    @DisplayName("Somme correcte des montants")
+    void testSommeCorrecteMontants() {
+        List<Double> factures = Arrays.asList(1000.0);
         double total = calculerTotalFacture(factures);
-        assertEquals(2050.50, total, "une liste vide doit donner un total de 0");
+        assertEquals(1000, total, "La somme doit correspondre au montant de la facture unique");
     }
 
     @Test
-    @DisplayName("doit retourner 0 si la liste des factures est vide")
-    void testCalculTotalListeVide() {
+    @DisplayName("Plusieurs factures")
+    void testPlusieursFactures() {
+        List<Double> factures = Arrays.asList(1500.0, 250.50, 300.0, 50.0);
+        double total = calculerTotalFacture(factures);
+        assertEquals(2100.50, total, "La somme de plusieurs factures doit etre exacte");
+    }
+
+    @Test
+    @DisplayName("Cas liste vide")
+    void testCasListeVide() {
         List<Double> factures = Collections.emptyList();
         double total = calculerTotalFacture(factures);
         assertEquals(0.0, total, "une liste vide doit donner un total de 0");
