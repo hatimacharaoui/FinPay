@@ -75,7 +75,9 @@ public class Paiement {
         this.totalPaiment = totalPaiment;
     }
 
-
+    public double calculerCommission(double montant) {
+        return montant * 0.02;
+    }
     public void enregistrerPaiement(Scanner input) {
 
         System.out.println("==== Nouveau Paiement ====");
@@ -133,7 +135,7 @@ public class Paiement {
             if (!rsDetail.next()) {
                 System.out.println("Facture introuvable.");
                 return;
-            }
+            }   
 
             double montantTotal = rsDetail.getDouble("montant_total");
             double dejaPaye = rsDetail.getDouble("deja_paye");
@@ -151,7 +153,7 @@ public class Paiement {
             }
 
             //  Calcul commission
-            double commission = montantVerse * 0.02;
+            double commission = calculerCommission(montantVerse);
             double resteFinal = resteAvant - montantVerse;
 
             //  Insérer paiement

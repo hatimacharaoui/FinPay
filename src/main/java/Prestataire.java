@@ -202,5 +202,11 @@ public class Prestataire extends Person {
             e.printStackTrace();
         }
     }
+    public String calculerStatut(double totalFacture, double totalPaiement) {
+        if (totalPaiement >= totalFacture) {
+            return "PAID";
+        }
+        return "PENDING";
+    }
 
 }
