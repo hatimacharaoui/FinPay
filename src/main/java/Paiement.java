@@ -76,6 +76,13 @@ public class Paiement {
     }
 
 
+    public String determinerStatut(double montantTotal, double montantPaye) {
+
+        if (montantPaye >= montantTotal) {
+            return "PAID";
+        } else {  return "PENDING"; }
+    }
+
     public void enregistrerPaiement(Scanner input) {
 
         System.out.println("==== Nouveau Paiement ====");
@@ -85,7 +92,6 @@ public class Paiement {
 
         try (Connection conn = DBConnection.getConnection()) {
 
-            // Afficher factures non payées
             String sqlFactures =
                     "SELECT f.id_facture, f.montant_total, " +
                             "COALESCE(SUM(p.totalPaiment),0) as deja_paye " +
@@ -114,11 +120,9 @@ public class Paiement {
                 return;
             }
 
-            // Choisir facture
             System.out.print("Entrez l'ID de la facture : ");
             int idFacture = input.nextInt();
 
-            // Récupérer montant total et déjà payé
             String sqlDetail =
                     "SELECT montant_total, " +
                             "COALESCE((SELECT SUM(totalPaiment) FROM paiement WHERE id_facture = ?),0) as deja_paye " +
@@ -141,7 +145,6 @@ public class Paiement {
 
             System.out.println("Reste actuel : " + resteAvant + " DH");
 
-            //  Montant versé
             System.out.print("Montant à verser : ");
             double montantVerse = input.nextDouble();
 
@@ -150,11 +153,9 @@ public class Paiement {
                 return;
             }
 
-            //  Calcul commission
-            double commission = montantVerse * 0.02;
+            double commission = calculeCommission(montantVerse);
             double resteFinal = resteAvant - montantVerse;
 
-            //  Insérer paiement
             String sqlInsert =
                     "INSERT INTO paiement(id_client, id_facture, totalPaiment, date_paiment, commission) " +
                             "VALUES (?, ?, ?, ?, ?)";
@@ -168,7 +169,6 @@ public class Paiement {
 
             psInsert.executeUpdate();
 
-            // 7Mise à jour statut facture
             String nouveauStatut = (resteFinal <= 0.01) ? "PAYEE" : "PARTIEL";
 
             String sqlUpdate = "UPDATE facture SET statut = ? WHERE id_facture = ?";
@@ -186,6 +186,120 @@ public class Paiement {
 
         } catch (SQLException e) {
             System.out.println("Erreur base de données : " + e.getMessage());
+        }
+
+
+    }
+
+    public double calculeCommission(double montantTotal){
+        double commission = montantTotal * 0.02;
+        return commission;
+    }
+
+
+    public String testPaiement(Scanner input, int idClient, int idFacture, double montantVerse) {
+
+        try (Connection conn = DBConnection.getConnection()) {
+
+            // Afficher factures non payées
+            String sqlFactures =
+                    "SELECT f.id_facture, f.montant_total, " +
+                            "COALESCE(SUM(p.totalPaiment),0) as deja_paye " +
+                            "FROM facture f " +
+                            "LEFT JOIN paiement p ON f.id_facture = p.id_facture " +
+                            "WHERE f.id_client = ? AND f.statut != 'PAYEE' " +
+                            "GROUP BY f.id_facture";
+
+            PreparedStatement psFacture = conn.prepareStatement(sqlFactures);
+            psFacture.setInt(1, idClient);
+            ResultSet rs = psFacture.executeQuery();
+
+            boolean existe = false;
+            while (rs.next()) {
+                existe = true;
+                double reste = rs.getDouble("montant_total") - rs.getDouble("deja_paye");
+                System.out.println("ID Facture: " + rs.getInt("id_facture") + " | Reste à payer: " + reste + " DH");
+            }
+
+            if (!existe) {
+                System.out.println("Aucune facture à payer.");
+                return "PENDING";
+            }
+
+            // Récupérer montant total et déjà payé
+            String sqlDetail =
+                    "SELECT montant_total, " +
+                            "COALESCE((SELECT SUM(totalPaiment) FROM paiement WHERE id_facture = ?),0) as deja_paye " +
+                            "FROM facture WHERE id_facture = ?";
+
+            PreparedStatement psDetail = conn.prepareStatement(sqlDetail);
+            psDetail.setInt(1, idFacture);
+            psDetail.setInt(2, idFacture);
+            ResultSet rsDetail = psDetail.executeQuery();
+
+            if (!rsDetail.next()) {
+                System.out.println("Facture introuvable.");
+                return "PENDING";
+            }
+
+            double montantTotal = rsDetail.getDouble("montant_total");
+            double dejaPaye = rsDetail.getDouble("deja_paye");
+            double resteAvant = montantTotal - dejaPaye;
+
+            System.out.println("Reste actuel : " + resteAvant + " DH");
+
+            if (montantVerse > resteAvant) {
+                System.out.println("Erreur : montant supérieur au reste !");
+            }
+
+            // Calcul commission
+            double commission = montantVerse * 0.02;
+            double resteFinal = resteAvant - montantVerse;
+
+            // Insérer paiement
+//            String sqlInsert =
+//                    "INSERT INTO paiement(id_client, id_facture, totalPaiment, date_paiment, commission) " +
+//                            "VALUES (?, ?, ?, ?, ?)";
+//
+//            PreparedStatement psInsert = conn.prepareStatement(sqlInsert);
+//            psInsert.setInt(1, idClient);
+//            psInsert.setInt(2, idFacture);
+//            psInsert.setDouble(3, montantVerse);
+//            psInsert.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+//            psInsert.setDouble(5, commission);
+//            psInsert.executeUpdate();
+
+            // Déterminer nouveau statut
+            String nouveauStatut;
+            if (montantVerse <= 0) {
+                // Aucun paiement effectué
+                nouveauStatut = "PENDING";
+            } else if (resteFinal <= 0.01) {
+                // Paiement total
+                nouveauStatut = "PAID";
+            } else {
+                // Paiement partiel
+                nouveauStatut = "PENDING";
+            }
+
+            // Mettre à jour la facture
+//            String sqlUpdate = "UPDATE facture SET statut = ? WHERE id_facture = ?";
+//            PreparedStatement psUpdate = conn.prepareStatement(sqlUpdate);
+//            psUpdate.setString(1, nouveauStatut);
+//            psUpdate.setInt(2, idFacture);
+//            psUpdate.executeUpdate();
+
+            System.out.println("==== Transaction réussie ====");
+            System.out.println("Montant versé : " + montantVerse + " DH");
+            System.out.println("Commission (2%) : " + commission + " DH");
+            System.out.println("Nouveau statut : " + nouveauStatut);
+            System.out.println("Reste à payer : " + (resteFinal < 0 ? 0 : resteFinal) + " DH");
+
+            return nouveauStatut;
+
+        } catch (SQLException e) {
+            System.out.println("Erreur base de données : " + e.getMessage());
+            return "PENDING";
         }
     }
 

@@ -8,9 +8,11 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class FacturesExcel {
 
-    public static void exporterFacturesImpayees() {
+    public String exporterFacturesImpayees(int Numfacture) {
 
-        String sql = "SELECT f.id_facture, c.nom, f.date_facture, f.montant_total " +
+        String testFacture = "facturesimpayees_" + Numfacture + ".xls";
+
+        String sql = "SELECT f.id_facture, c.nom, c.email, f.date_facture, f.montant_total " +
                 "FROM facture f " +
                 "JOIN client c ON f.id_client = c.id_client " +
                 "WHERE f.statut = 'PENDING'";
@@ -28,6 +30,7 @@ public class FacturesExcel {
             header.createCell(2).setCellValue("Date");
             header.createCell(3).setCellValue("Montant");
             header.createCell(4).setCellValue("Jours de Retard");
+            header.createCell(5).setCellValue("Email");
 
             int rowNum = 1;
 
@@ -37,6 +40,7 @@ public class FacturesExcel {
                 String client = rs.getString("nom");
                 Date dateFacture = rs.getDate("date_facture");
                 double montant = rs.getDouble("montant_total");
+                String email = rs.getString("email");
 
 
                 LocalDate dateF = dateFacture.toLocalDate();
@@ -48,10 +52,11 @@ public class FacturesExcel {
                 row.createCell(2).setCellValue(dateFacture.toString());
                 row.createCell(3).setCellValue(montant);
                 row.createCell(4).setCellValue(joursRetard);
+                row.createCell(5).setCellValue(email);
+
             }
 
-
-            FileOutputStream fileOut = new FileOutputStream("facturesimpayeesmois.xls");
+            FileOutputStream fileOut = new FileOutputStream(testFacture);
             workbook.write(fileOut);
             fileOut.close();
 
@@ -60,5 +65,6 @@ public class FacturesExcel {
         } catch (Exception e) {
             System.out.println("Erreur export : " + e.getMessage());
         }
+        return testFacture;
     }
 }

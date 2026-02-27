@@ -181,7 +181,7 @@ public class Main {
                     break;
 
                 case 6 :
-                    FacturePDF.genererFacture();
+//                    FacturePDF.genererFacture();
                     break;
                 case 7 :
                     RecuGenerator.genererDernierRecu();
@@ -190,10 +190,10 @@ public class Main {
                     FacturePrestataireMois.execute();
                     break;
                 case 9 :
-                    RapportExcel.genererRapportGlobalMensuel();
+//                    RapportExcel.genererRapportGlobalMensuel();
                     break;
                 case 10 :
-                    FacturesExcel.exporterFacturesImpayees();
+//                    facturesExcel.exporterFacturesImpayees();
                     break;
 
                 default : System.out.println("Choix invalide ");

@@ -1,6 +1,5 @@
 import java.sql.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -19,6 +18,17 @@ public class Prestataire extends Person {
         setId(id);
     }
 
+    public double calculerTotalFactures(List<Double> montants) {
+        if (montants == null || montants.isEmpty()) {
+            return 0.0;
+        }
+
+        double total = 0.0;
+        for (double m : montants) {
+            total += m;
+        }
+        return total;
+    }
 
     public void AjouterP() {
 

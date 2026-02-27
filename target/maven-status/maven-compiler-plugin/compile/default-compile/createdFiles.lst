@@ -1,0 +1,13 @@
+Client.class
+Facture.class
+Statistique.class
+Prestataire.class
+RecuGenerator.class
+DBConnection.class
+Main.class
+RapportExcel.class
+FacturePDF.class
+Person.class
+Paiement.class
+FacturePrestataireMois.class
+FacturesExcel.class
