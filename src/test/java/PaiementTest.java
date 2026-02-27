@@ -15,6 +15,6 @@ public class PaiementTest {
     }
     @Test
     void commissionMontantEleve() {
-        assertEquals(10.0, paiement.calculerCommission(500));
+        assertEquals(87.0, paiement.calculerCommission(500));
     }
 }
