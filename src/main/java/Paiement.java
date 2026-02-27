@@ -94,7 +94,7 @@ public class Paiement {
                             "FROM facture f " +
                             "LEFT JOIN paiement p ON f.id_facture = p.id_facture " +
                             "WHERE f.id_client = ? AND f.statut != 'PAYEE' " +
-                            "GROUP BY f.id_facture";
+                            "GROUP BY f.id_ facture";
 
             PreparedStatement psFacture = conn.prepareStatement(sqlFactures);
             psFacture.setInt(1, idClient);
