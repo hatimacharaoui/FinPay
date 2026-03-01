@@ -75,7 +75,9 @@ public class Paiement {
         this.totalPaiment = totalPaiment;
     }
 
-
+    public double calculerCommission(double montant) {
+        return montant * 0.02;
+    }
     public void enregistrerPaiement(Scanner input) {
 
         System.out.println("==== Nouveau Paiement ====");
@@ -92,7 +94,7 @@ public class Paiement {
                             "FROM facture f " +
                             "LEFT JOIN paiement p ON f.id_facture = p.id_facture " +
                             "WHERE f.id_client = ? AND f.statut != 'PAYEE' " +
-                            "GROUP BY f.id_facture";
+                            "GROUP BY f.id_ facture";
 
             PreparedStatement psFacture = conn.prepareStatement(sqlFactures);
             psFacture.setInt(1, idClient);
@@ -133,7 +135,7 @@ public class Paiement {
             if (!rsDetail.next()) {
                 System.out.println("Facture introuvable.");
                 return;
-            }
+            }   
 
             double montantTotal = rsDetail.getDouble("montant_total");
             double dejaPaye = rsDetail.getDouble("deja_paye");
@@ -151,7 +153,7 @@ public class Paiement {
             }
 
             //  Calcul commission
-            double commission = montantVerse * 0.02;
+            double commission = calculerCommission(montantVerse);
             double resteFinal = resteAvant - montantVerse;
 
             //  Insérer paiement

@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -15,8 +14,8 @@ public class RapportExcel {
                        "p.nom AS prestataire, " +
                        "COUNT(f.id_facture) AS nombre_factures, " +
                        "SUM(f.montant_total) AS total_genere, " +
-                       "SUM(pa.commission) AS total_commissions" +
-                       "FROM prestataire p" +
+                       "SUM(pa.commission) AS total_commissions " +
+                       "FROM prestataire p " +
                        "JOIN facture f ON p.id_prestataire = f.id_prestataire " +
                        "JOIN paiement pa ON f.id_facture = pa.id_facture " +
                        "GROUP BY p.id_prestataire, p.nom";

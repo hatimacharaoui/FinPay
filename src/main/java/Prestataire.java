@@ -1,7 +1,5 @@
 import java.sql.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Prestataire extends Person {
@@ -203,6 +201,12 @@ public class Prestataire extends Person {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    public String calculerStatut(double totalFacture, double totalPaiement) {
+        if (totalPaiement >= totalFacture) {
+            return "PAID";
+        }
+        return "PENDING";
     }
 
 }

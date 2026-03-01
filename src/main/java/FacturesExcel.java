@@ -13,7 +13,7 @@ public class FacturesExcel {
         String sql = "SELECT f.id_facture, c.nom, f.date_facture, f.montant_total " +
                 "FROM facture f " +
                 "JOIN client c ON f.id_client = c.id_client " +
-                "WHERE f.statut = 'PENDING'";
+                "WHERE f.statut = 'NON_PAYEE'";
 
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);

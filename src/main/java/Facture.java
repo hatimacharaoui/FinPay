@@ -1,6 +1,5 @@
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class Facture {
     private int id ;
